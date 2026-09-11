@@ -11,6 +11,8 @@ Hermit TV is a synchronized, single-channel movie website. Every viewer in Live 
 - synchronized movie return after every break
 - Start over, Rewind 30 sec and Join live controls
 - responsive theater interface for phones and desktops
+- saturated movie-specific color backgrounds with poster and YouTube-thumbnail support
+- Open Graph and X large-image sharing metadata
 - YouTube IFrame Player API integration
 - holding screen when an authorized video source is not configured
 
@@ -27,6 +29,8 @@ Edit `data/catalog.js`. A movie becomes playable only when it has both a YouTube
 ```
 
 Commercial sources are in `HERMIT_COMMERCIALS` in the same file. Blank commercial IDs intentionally display a synchronized Hermit TV station card instead of failing playback.
+
+An approved movie background can be placed in `posterUrl`. If that field is blank and a YouTube video ID exists, Hermit TV uses the YouTube thumbnail. Otherwise it uses the original Hermit TV theater artwork and a color generated from the movie title.
 
 ## Broadcast clock
 

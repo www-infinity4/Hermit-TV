@@ -45,6 +45,23 @@
     return mins >= 60 ? `${Math.floor(mins/60)}h ${mins%60}m` : `${mins} min`;
   }
 
+  function movieHue(movie) {
+    let hash = 0;
+    for (const char of movie.title) hash = ((hash << 5) - hash + char.charCodeAt(0)) | 0;
+    return Math.abs(hash) % 360;
+  }
+
+  function artForMovie(movie) {
+    if (movie.posterUrl) return movie.posterUrl;
+    if (movie.videoId) return `https://i.ytimg.com/vi/${movie.videoId}/maxresdefault.jpg`;
+    return "assets/hermit-tv-preview.jpg";
+  }
+
+  function setProgramArt(movie) {
+    document.body.style.setProperty("--program-hue", movieHue(movie));
+    document.body.style.setProperty("--program-art", `url("${artForMovie(movie)}")`);
+  }
+
   function renderGuide() {
     els.guideDate.textContent = new Intl.DateTimeFormat("en-US", {timeZone:engine.TIME_ZONE,weekday:"long",month:"long",day:"numeric"}).format(new Date(schedule[0].startsAtMs));
     els.guide.innerHTML = schedule.map(item => `<article class="guide-row" data-id="${item.id}"><time>${formatStationTime(item.startsAtMs)}</time><strong>${item.movie.title}</strong><span>${item.movie.year} · ${item.movie.collection}</span></article>`).join("");
@@ -54,7 +71,9 @@
     const currentIndex = schedule.findIndex(item => item.id === currentBlock.id);
     els.next.innerHTML = [1,2,3].map(step => {
       const item = schedule[(currentIndex + step) % schedule.length];
-      return `<article class="next-card"><time>${formatStationTime(item.startsAtMs)}</time><div><h3>${item.movie.title}</h3><p>${item.movie.year} · ${item.movie.collection}</p></div></article>`;
+      const hue = movieHue(item.movie);
+      const art = artForMovie(item.movie).replace(/"/g, "%22");
+      return `<article class="next-card" style="--card-hue:${hue};--card-art:url('${art}')"><time>${formatStationTime(item.startsAtMs)}</time><div><h3>${item.movie.title}</h3><p>${item.movie.year} · ${item.movie.collection}</p></div></article>`;
     }).join("");
   }
 
@@ -96,6 +115,7 @@
     els.clock.textContent = `${formatStationTime(Date.now())} CT`;
     els.mode.textContent = mode === "live" ? (state.segment.kind === "commercial" ? "LIVE · COMMERCIAL BREAK" : "LIVE CHANNEL") : "TIME SHIFTED";
     els.title.textContent = state.block.movie.title;
+    setProgramArt(state.block.movie);
     els.programTime.textContent = `${formatStationTime(state.block.startsAtMs)}–${formatStationTime(state.block.endsAtMs)}`;
     els.position.textContent = mode === "live" ? "Synced with every live viewer" : `${formatDuration(state.blockElapsed)} from start`;
     els.remaining.textContent = `${formatDuration(state.blockRemaining)} remaining in slot`;

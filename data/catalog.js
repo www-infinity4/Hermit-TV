@@ -15,6 +15,7 @@ window.HERMIT_CATALOG = [
   collection: movie[2],
   runtimeSeconds: 6000,
   videoId: "",
+  posterUrl: "",
   cleared: false
 }));
 
