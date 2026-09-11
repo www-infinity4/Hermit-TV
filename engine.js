@@ -77,9 +77,12 @@
       segments.push({kind:"movie", title:block.movie.title, videoId:block.movie.videoId, cleared:block.movie.cleared, sourceStart, stationStart:stationOffset, duration});
       stationOffset += duration;
       if (i < boundaries.length - 2) {
-        const ad = commercials[adIndex++ % commercials.length];
-        segments.push({kind:"commercial", title:ad.title, videoId:ad.videoId, cleared:ad.cleared, sourceStart:0, stationStart:stationOffset, duration:180});
-        stationOffset += 180;
+        for (let spot = 0; spot < 3; spot++) {
+          const ad = commercials[adIndex++ % commercials.length];
+          const duration = ad.durationSeconds || 60;
+          segments.push({kind:"commercial", title:ad.title, videoId:ad.videoId, cleared:ad.cleared, sourceStart:0, stationStart:stationOffset, duration});
+          stationOffset += duration;
+        }
       }
     }
     if (stationOffset < BLOCK_SECONDS) {
@@ -94,10 +97,16 @@
     const segments = createSegments(block, commercials);
     const segment = segments.find(item => blockElapsed >= item.stationStart && blockElapsed < item.stationStart + item.duration) || segments[segments.length - 1];
     const segmentElapsed = Math.max(0, blockElapsed - segment.stationStart);
+    const segmentIndex = segments.indexOf(segment);
+    let movieReturnsIn = segment.duration - segmentElapsed;
+    for (let i = segmentIndex + 1; segment.kind === "commercial" && i < segments.length && segments[i].kind === "commercial"; i++) {
+      movieReturnsIn += segments[i].duration;
+    }
     return {
       block, segment, segmentElapsed, blockElapsed,
       mediaSeconds: segment.sourceStart + segmentElapsed,
       segmentRemaining: Math.max(0, segment.duration - segmentElapsed),
+      movieReturnsIn: Math.max(0, movieReturnsIn),
       blockRemaining: Math.max(0, block.blockSeconds - blockElapsed)
     };
   }

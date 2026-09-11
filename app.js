@@ -62,7 +62,7 @@
     els.stationCard.hidden = false;
     els.cardLabel.textContent = state.segment.kind === "commercial" ? "COMMERCIAL BREAK" : "HERMIT TV";
     els.cardTitle.textContent = state.segment.title;
-    els.cardCountdown.textContent = `${formatDuration(state.segmentRemaining)} until the movie returns`;
+    els.cardCountdown.textContent = `${formatDuration(state.movieReturnsIn)} until the movie returns`;
   }
 
   function loadMedia(state) {

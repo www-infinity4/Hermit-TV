@@ -7,7 +7,7 @@ Hermit TV is a synchronized, single-channel movie website. Every viewer in Live 
 - 101 curated movies, including *Young Einstein*
 - deterministic 24-hour guide regenerated from the station date
 - twelve two-hour movie slots per day
-- three synchronized three-minute commercial breaks within each slot
+- three synchronized three-minute commercial breaks within each slot, with three one-minute spots per break
 - synchronized movie return after every break
 - Start over, Rewind 30 sec and Join live controls
 - responsive theater interface for phones and desktops
