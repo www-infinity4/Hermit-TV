@@ -15,6 +15,7 @@
 
   let player = null;
   let playerReady = false;
+  let apiRequested = false;
   let entered = false;
   let loadedKey = "";
   let loadedMovieVideoId = "";
@@ -144,7 +145,21 @@
   function enterStation() {
     entered = true;
     els.enter.hidden = true;
+    loadYouTubeApi();
     tick();
+  }
+
+  function loadYouTubeApi() {
+    if (apiRequested || playerReady) return;
+    apiRequested = true;
+    if (window.YT && window.YT.Player) {
+      window.onYouTubeIframeAPIReady();
+      return;
+    }
+    const tag = document.createElement("script");
+    tag.src = "https://www.youtube.com/iframe_api";
+    tag.referrerPolicy = "strict-origin-when-cross-origin";
+    document.head.appendChild(tag);
   }
 
   function startOver() {
@@ -174,7 +189,7 @@
 
   window.onYouTubeIframeAPIReady = function () {
     player = new YT.Player("player", {
-      width:"100%", height:"100%", playerVars:{playsinline:1,controls:1,enablejsapi:1,origin:location.origin},
+      width:"100%", height:"100%", playerVars:{playsinline:1,controls:1,enablejsapi:1,origin:location.origin,widget_referrer:location.href},
       events:{
         onReady:() => { playerReady=true; tick(); },
         onError:() => {
@@ -193,9 +208,6 @@
   els.rewind.addEventListener("click", rewind);
   els.live.addEventListener("click", joinLive);
 
-  const tag = document.createElement("script");
-  tag.src = "https://www.youtube.com/iframe_api";
-  document.head.appendChild(tag);
   ensureSchedule(Date.now());
   tick();
   setInterval(tick, 1000);
