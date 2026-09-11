@@ -4,7 +4,7 @@ Hermit TV is a synchronized, single-channel movie website. Every viewer in Live 
 
 ## Current foundation
 
-- 101 curated movies, including *Young Einstein*
+- free full-length YouTube movie rotation from established film channels
 - deterministic 24-hour guide regenerated from the station date
 - twelve two-hour movie slots per day
 - three synchronized three-minute commercial breaks within each slot, with three one-minute spots per break
@@ -14,15 +14,15 @@ Hermit TV is a synchronized, single-channel movie website. Every viewer in Live 
 - saturated movie-specific color backgrounds with poster and YouTube-thumbnail support
 - Open Graph and X large-image sharing metadata
 - YouTube IFrame Player API integration
-- holding screen when an authorized video source is not configured
+- scheduler excludes every entry without a usable YouTube video ID
 
 ## Add approved sources
 
-Edit `data/catalog.js`. A movie becomes playable only when it has both a YouTube `videoId` and `cleared: true`.
+Edit `data/catalog.js`. A movie becomes playable only when it has both a YouTube `videoId` and `cleared: true`. The original commercial-release wish list was replaced because those full movies were not available as free authorized embeds.
 
 ```js
 {
-  title: "Young Einstein",
+  title: "A free full movie",
   videoId: "AUTHORIZED_VIDEO_ID",
   cleared: true
 }

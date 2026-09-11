@@ -55,7 +55,10 @@
   function createDaySchedule(nowMs, catalog) {
     const p = stationParts(new Date(nowMs));
     const midnightMs = zonedToUtc(p.year, p.month, p.day);
-    const featured = seededShuffle(catalog, dateKey(nowMs)).slice(0, 12);
+    const eligible = catalog.filter(movie => movie.cleared && movie.videoId);
+    if (!eligible.length) throw new Error("Hermit TV has no playable movies configured.");
+    const shuffled = seededShuffle(eligible, dateKey(nowMs));
+    const featured = Array.from({length:12}, (_, index) => shuffled[index % shuffled.length]);
     return featured.map((movie, index) => ({
       id: `${dateKey(nowMs)}-${String(index).padStart(2,"0")}`,
       movie,
