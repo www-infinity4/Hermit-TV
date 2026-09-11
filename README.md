@@ -15,6 +15,7 @@ Hermit TV is a synchronized, single-channel movie website. Every viewer in Live 
 - Open Graph and X large-image sharing metadata
 - YouTube IFrame Player API integration
 - scheduler excludes every entry without a usable YouTube video ID
+- automatic replacement when the YouTube player reports that a scheduled movie is unavailable
 
 ## Add approved sources
 

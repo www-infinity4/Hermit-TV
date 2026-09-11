@@ -17,6 +17,8 @@
   let playerReady = false;
   let entered = false;
   let loadedKey = "";
+  let loadedMovieVideoId = "";
+  const failedMovieVideoIds = new Set();
   let scheduleKey = "";
   let schedule = [];
   let mode = "live";
@@ -31,7 +33,8 @@
     const key = engine.dateKey(nowMs);
     if (key !== scheduleKey) {
       scheduleKey = key;
-      schedule = engine.createDaySchedule(nowMs, catalog);
+      const availableCatalog = catalog.filter(movie => !failedMovieVideoIds.has(movie.videoId));
+      schedule = engine.createDaySchedule(nowMs, availableCatalog);
       renderGuide();
     }
   }
@@ -110,6 +113,7 @@
     if (!playerReady) return;
     if (loadedKey !== mediaKey) {
       loadedKey = mediaKey;
+      loadedMovieVideoId = state.segment.kind === "movie" ? state.segment.videoId : "";
       player.loadVideoById({videoId:state.segment.videoId,startSeconds:state.mediaSeconds});
       return;
     }
@@ -171,7 +175,16 @@
   window.onYouTubeIframeAPIReady = function () {
     player = new YT.Player("player", {
       width:"100%", height:"100%", playerVars:{playsinline:1,controls:1,enablejsapi:1,origin:location.origin},
-      events:{onReady:() => { playerReady=true; tick(); },onError:() => { loadedKey=""; }}
+      events:{
+        onReady:() => { playerReady=true; tick(); },
+        onError:() => {
+          if (loadedMovieVideoId) failedMovieVideoIds.add(loadedMovieVideoId);
+          scheduleKey = "";
+          loadedKey = "";
+          loadedMovieVideoId = "";
+          setTimeout(tick, 250);
+        }
+      }
     });
   };
 
