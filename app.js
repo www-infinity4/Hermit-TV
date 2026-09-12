@@ -129,7 +129,7 @@
     ensureSchedule(now);
     const state = engine.resolve(now, schedule, commercials);
     const liveState = engine.resolve(Date.now(), engine.createDaySchedule(Date.now(), catalog), commercials);
-    els.clock.textContent = `${formatStationTime(Date.now())} CT`;
+    els.clock.textContent = `${formatStationTime(Date.now())} local`;
     els.mode.textContent = mode === "live" ? (state.segment.kind === "commercial" ? "LIVE · COMMERCIAL BREAK" : "LIVE CHANNEL") : "TIME SHIFTED";
     els.title.textContent = state.block.movie.title;
     setProgramArt(state.block.movie);
