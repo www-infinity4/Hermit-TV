@@ -186,3 +186,34 @@ footer span { color: var(--gold); font: 700 1.25rem Georgia, serif; letter-spaci
   .channel-menu summary { padding-inline: 10px; }
   .channel-directory nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+
+/* StarCoin sharing and Infinity Phi web search */
+.share-button { border-color: rgba(255,210,88,.58) !important; }
+.share-status {
+  min-height: 48px; padding: 0 8px; display: inline-flex; align-items: center;
+  color: var(--gold-soft); font-size: .82rem; font-weight: 750;
+}
+.phi-web-search {
+  padding: 36px max(16px, calc((100vw - 1160px) / 2)); display: grid;
+  grid-template-columns: minmax(180px,.45fr) minmax(280px,1fr); gap: 22px; align-items: end;
+  border-top: 1px solid var(--line); background: #09070f;
+}
+.phi-web-search p { margin: 0 0 7px; color: var(--gold); font-size: .76rem; font-weight: 900; letter-spacing: .2em; }
+.phi-web-search h2 { margin: 0; }
+.phi-web-search form {
+  min-height: 58px; padding: 5px; display: grid; grid-template-columns: 1fr auto; gap: 7px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 999px;
+}
+.phi-web-search input {
+  min-width: 0; padding: 0 16px; color: var(--cream); background: transparent; border: 0;
+  outline: 0; font: inherit;
+}
+.phi-web-search button {
+  min-height: 46px; padding: 0 18px; color: var(--ink); background: var(--gold);
+  border: 0; border-radius: 999px; font: inherit; font-weight: 900; cursor: pointer;
+}
+@media (max-width: 720px) {
+  .phi-web-search { grid-template-columns: 1fr; gap: 15px; }
+  .share-status { flex-basis: 100%; }
+}
