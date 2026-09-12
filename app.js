@@ -10,7 +10,7 @@
     enter: $("enterButton"), stationCard: $("stationCard"), cardLabel: $("stationCardLabel"),
     cardTitle: $("stationCardTitle"), cardCountdown: $("stationCardCountdown"), startOver: $("startOverButton"),
     rewind: $("rewindButton"), live: $("liveButton"), position: $("positionLabel"), remaining: $("remainingLabel"),
-    progress: $("progressBar"), next: $("nextCards"), guide: $("guideRows"), guideDate: $("guideDate")
+    progress: $("progressBar"), next: $("nextCards"), guide: $("guideRows"), guideDate: $("guideDate"), share: $("shareButton"), shareStatus: $("shareStatus")
   };
 
   let player = null;
@@ -187,6 +187,82 @@
     tick();
   }
 
+  function localShareCredit(reference) {
+    const attemptId = `channel-share-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}`;
+    if (window.StarQuestAuth && typeof window.StarQuestAuth.recordShare === "function") {
+      const result = window.StarQuestAuth.recordShare(reference, {
+        attemptId, confirmed:true, verified:true, method:"web_share_api",
+        url:reference, showTitle:document.title
+      });
+      if (result && result.ok) return result;
+    }
+    const parse = (key, fallback) => {
+      try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch (_) { return fallback; }
+    };
+    const session = parse("starquest_session", null);
+    const users = parse("starquest_users", {});
+    const signedIn = session && session.key && users[session.key];
+    const profile = signedIn || parse("starquest_guest_profile_v1", {
+      key:"__guest__", username:"Guest", tokens:0, shareCount:0, pendingShareCredits:0,
+      shareEvents:[], ledger:[], watchHistory:[], watchPositions:{}, unlockedContent:{}
+    });
+    profile.tokens = Math.max(0, Number(profile.tokens) || 0);
+    profile.shareCount = Math.max(0, Number(profile.shareCount) || 0) + 1;
+    profile.pendingShareCredits = Math.max(0, Number(profile.pendingShareCredits) || 0) + 1;
+    profile.shareEvents = Array.isArray(profile.shareEvents) ? profile.shareEvents : [];
+    profile.ledger = Array.isArray(profile.ledger) ? profile.ledger : [];
+    const event = { id:attemptId, attemptId, contentId:reference, method:"web_share_api", confirmed:true, verified:true, createdAt:Date.now() };
+    profile.shareEvents.push(event);
+    let awarded = 0;
+    while (profile.pendingShareCredits >= 10) {
+      profile.pendingShareCredits -= 10;
+      profile.tokens += 1;
+      awarded += 1;
+    }
+    profile.ledger.push({
+      id:`tx-${attemptId}`, type:awarded ? "share_reward" : "share_credit",
+      amount:awarded, balance:profile.tokens, pendingShareCredits:profile.pendingShareCredits,
+      reason:awarded ? "Share reward: 10 completed shares" : `Confirmed share receipt ${profile.pendingShareCredits}/10`,
+      referenceId:attemptId, createdAt:Date.now()
+    });
+    profile.shareEvents = profile.shareEvents.slice(-250);
+    profile.ledger = profile.ledger.slice(-500);
+    if (signedIn) {
+      users[session.key] = profile;
+      localStorage.setItem("starquest_users", JSON.stringify(users));
+    } else {
+      localStorage.setItem("starquest_guest_profile_v1", JSON.stringify(profile));
+    }
+    window.dispatchEvent(new CustomEvent("starquest:share-progress", {detail:{
+      lifetimeShareCount:profile.shareCount, progressToNextCoin:profile.pendingShareCredits,
+      sharesPerCoin:10, awarded, balance:profile.tokens, event
+    }}));
+    return {ok:true, credited:true, progressToNextCoin:profile.pendingShareCredits, awarded, balance:profile.tokens};
+  }
+
+  async function shareChannel() {
+    const title = els.title.textContent && !els.title.textContent.includes("Loading") ? els.title.textContent : document.title;
+    const share = { title:`${title} · ${document.title}`, text:`Watch ${title} live on ${document.title}.`, url:location.href };
+    if (!navigator.share) {
+      try {
+        await navigator.clipboard.writeText(share.url);
+        els.shareStatus.textContent = "Link copied. Open Android Share to earn 1/10 StarCoin.";
+      } catch (_) {
+        els.shareStatus.textContent = "Sharing is unavailable in this browser.";
+      }
+      return;
+    }
+    try {
+      await navigator.share(share);
+      const result = localShareCredit(share.url);
+      els.shareStatus.textContent = result.awarded
+        ? "Shared · 1 StarCoin completed!"
+        : `Shared · StarCoin progress ${result.progressToNextCoin}/10`;
+    } catch (error) {
+      if (!error || error.name !== "AbortError") els.shareStatus.textContent = "Share did not complete.";
+    }
+  }
+
   window.onYouTubeIframeAPIReady = function () {
     player = new YT.Player("player", {
       width:"100%", height:"100%", playerVars:{playsinline:1,controls:1,enablejsapi:1,origin:location.origin,widget_referrer:location.href},
@@ -207,6 +283,7 @@
   els.startOver.addEventListener("click", startOver);
   els.rewind.addEventListener("click", rewind);
   els.live.addEventListener("click", joinLive);
+  els.share.addEventListener("click", shareChannel);
 
   ensureSchedule(Date.now());
   tick();
