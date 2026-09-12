@@ -1,7 +1,7 @@
 (function (root) {
   "use strict";
 
-  const TIME_ZONE = "America/Chicago";
+  const TIME_ZONE = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
   const BLOCK_SECONDS = 7200;
   const BREAK_AFTER_CONTENT_SECONDS = [1500, 3000, 4500];
 
