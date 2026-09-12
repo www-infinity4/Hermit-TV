@@ -57,7 +57,15 @@
     const midnightMs = zonedToUtc(p.year, p.month, p.day);
     const eligible = catalog.filter(movie => movie.cleared && movie.videoId);
     if (!eligible.length) throw new Error("Hermit TV has no playable movies configured.");
-    const shuffled = seededShuffle(eligible, dateKey(nowMs));
+    const todayKey = dateKey(nowMs);
+    let shuffled = seededShuffle(eligible, todayKey);
+    const previousKey = dateKey(midnightMs - 1000);
+    const previous = seededShuffle(eligible, previousKey);
+    if (shuffled.length > 1 && (shuffled[0] === previous[0] || shuffled.map((item) => item.videoId || item.title).join("|") === previous.map((item) => item.videoId || item.title).join("|"))) {
+      const firstDifferent = shuffled.findIndex((item) => (item.videoId || item.title) !== (previous[0].videoId || previous[0].title));
+      const offset = firstDifferent > 0 ? firstDifferent : 1;
+      shuffled = [...shuffled.slice(offset), ...shuffled.slice(0, offset)];
+    }
     const featured = Array.from({length:12}, (_, index) => shuffled[index % shuffled.length]);
     return featured.map((movie, index) => ({
       id: `${dateKey(nowMs)}-${String(index).padStart(2,"0")}`,
