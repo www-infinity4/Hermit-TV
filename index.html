@@ -40,6 +40,10 @@
         <a href="https://www-infinity4.github.io/Cinemax/">Cinemax</a>
         <a href="https://www-infinity4.github.io/Starz/">Starz</a>
         <a href="https://www-infinity4.github.io/Encore/">Encore</a>
+        <a href="https://www-infinity4.github.io/TV-Database/">StarQuest</a>
+        <a href="https://www-infinity4.github.io/C13b0/">Infinity Phi</a>
+        <a href="https://www-infinity4.github.io/News-Phi/">News Phi</a>
+        <a href="https://www-infinity4.github.io/Omni-Phi/">Omni Phi</a>
       </nav>
     </details>
     <div class="on-air"><span></span> ON AIR</div>
@@ -74,6 +78,8 @@
         <button id="startOverButton" type="button">Start over</button>
         <button id="rewindButton" type="button">Rewind 30 sec</button>
         <button id="liveButton" class="live-button" type="button"><span></span> Join live</button>
+        <button id="shareButton" class="share-button" type="button">Share · +1/10 ⭐</button>
+        <span id="shareStatus" class="share-status" role="status" aria-live="polite"></span>
       </div>
 
       <div class="progress-wrap">
@@ -105,6 +111,19 @@
     </section>
   </main>
 
+
+
+  <section class="phi-web-search" aria-labelledby="phiWebSearchHeading">
+    <div>
+      <p>INFINITY PHI</p>
+      <h2 id="phiWebSearchHeading">Search the web</h2>
+    </div>
+    <form action="https://www-infinity4.github.io/C13b0/phi" method="get">
+      <input name="q" type="search" placeholder="Search the web" aria-label="Search the web with Infinity Phi" required>
+      <input name="run" type="hidden" value="1">
+      <button type="submit">Search φ</button>
+    </form>
+  </section>
 
   <section class="channel-directory" aria-labelledby="channelDirectoryHeading">
     <p id="channelDirectoryHeading">Choose another channel</p>
