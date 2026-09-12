@@ -133,3 +133,56 @@ footer span { color: var(--gold); font: 700 1.25rem Georgia, serif; letter-spaci
   html { scroll-behavior: auto; }
   #progressBar { transition: none; }
 }
+
+
+/* Shared Infinity channel navigation */
+.channel-menu { position: relative; justify-self: end; }
+.channel-menu summary {
+  min-width: 48px; min-height: 46px; padding: 0 13px; display: inline-flex; align-items: center;
+  justify-content: center; gap: 8px; color: var(--cream); background: var(--panel);
+  border: 1px solid var(--line); border-radius: 999px; cursor: pointer; font-weight: 850;
+  list-style: none;
+}
+.channel-menu summary::-webkit-details-marker { display: none; }
+.channel-menu summary > span:first-child { font-size: 1.45rem; line-height: 1; }
+.channel-menu[open] summary, .channel-menu summary:focus-visible { border-color: var(--gold); outline: none; }
+.channel-menu nav {
+  position: absolute; top: calc(100% + 10px); right: 0; z-index: 40; width: min(260px, calc(100vw - 28px));
+  padding: 8px; display: grid; gap: 4px; background: rgba(9,7,15,.98);
+  border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 22px 60px rgba(0,0,0,.58);
+}
+.channel-menu nav a {
+  min-height: 46px; padding: 0 14px; display: flex; align-items: center; color: var(--cream);
+  border-radius: 9px; text-decoration: none; font-weight: 800;
+}
+.channel-menu nav a:hover, .channel-menu nav a:focus-visible { background: var(--panel-2); outline: none; }
+.channel-menu nav a[aria-current="page"] { color: var(--ink); background: var(--gold); }
+.channel-directory {
+  padding: 34px max(16px, calc((100vw - 1160px) / 2)); border-top: 1px solid var(--line);
+  background: linear-gradient(180deg, #09070f, #060409);
+}
+.channel-directory > p {
+  margin: 0 0 15px; color: var(--gold); font-size: .78rem; font-weight: 900;
+  letter-spacing: .16em; text-transform: uppercase;
+}
+.channel-directory nav { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 9px; }
+.channel-directory a {
+  min-height: 48px; padding: 10px 8px; display: grid; place-items: center; color: var(--cream);
+  background: var(--panel); border: 1px solid var(--line); border-radius: 999px;
+  text-align: center; text-decoration: none; font-weight: 850;
+}
+.channel-directory a:hover, .channel-directory a:focus-visible { border-color: var(--gold); background: var(--panel-2); outline: none; }
+.channel-directory a[aria-current="page"] { color: var(--ink); background: var(--gold); border-color: var(--gold); }
+
+@media (min-width: 721px) {
+  .masthead { grid-template-columns: 1fr auto auto auto; }
+}
+@media (max-width: 900px) {
+  .channel-directory nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  .masthead { grid-template-columns: 1fr auto auto; gap: 9px; }
+  .menu-label { display: none; }
+  .channel-menu summary { padding-inline: 10px; }
+  .channel-directory nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
