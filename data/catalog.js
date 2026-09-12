@@ -1,9 +1,9 @@
+// Playback policy: R-rated and age-restricted movie entries are excluded from this channel rotation.
 // Full-length movies currently offered free by established YouTube movie channels.
 // Recheck availability periodically because publishers can change or remove embeds.
 window.HERMIT_CATALOG = [
   { id:"MOV-001", title:"The Phantom Planet", year:1961, collection:"Atomic Sci-Fi", runtimeSeconds:4920, videoId:"MqaN40sbap4", cleared:true },
   { id:"MOV-002", title:"Things to Come", year:1936, collection:"Future Worlds", runtimeSeconds:5820, videoId:"22cOGjikPG8", cleared:true },
-  { id:"MOV-003", title:"Galaxy of Terror", year:1981, collection:"Deep Space After Dark", runtimeSeconds:4860, videoId:"JpRsqqGMFdE", cleared:true },
   { id:"MOV-004", title:"The Amazing Transparent Man", year:1960, collection:"Strange Science", runtimeSeconds:4680, videoId:"OvJS9WFW7Uc", cleared:true },
   { id:"MOV-005", title:"Attack from Space", year:1965, collection:"Space Adventure", runtimeSeconds:3000, videoId:"duc_edJQaxU", cleared:true },
   { id:"MOV-006", title:"Phantom from Space", year:1953, collection:"Alien Signal", runtimeSeconds:4380, videoId:"SN8R3k73qj0", cleared:true },
@@ -14,9 +14,6 @@ window.HERMIT_CATALOG = [
   { id:"MOV-011", title:"A Room to Share", year:2024, collection:"Romantic Comedy", runtimeSeconds:5400, videoId:"8s7XqNWiTrw", cleared:true },
   { id:"MOV-012", title:"Runs in the Family", year:2023, collection:"Adventure Comedy", runtimeSeconds:6300, videoId:"AuwUwN1JVec", cleared:true },
   { id:"MOV-013", title:"Moving McAllister", year:2007, collection:"Road Comedy", runtimeSeconds:5340, videoId:"mVZOMXWsExs", cleared:true },
-  { id:"MOV-014", title:"Paper Man", year:2009, collection:"Superhero Comedy", runtimeSeconds:6600, videoId:"BDdyKWZrdng", cleared:true },
-  { id:"MOV-015", title:"Breakfast of Champions", year:1999, collection:"Offbeat Comedy", runtimeSeconds:6600, videoId:"uW9hO6pwjEs", cleared:true },
-  { id:"MOV-016", title:"Get Well Soon", year:2001, collection:"Comedy Night", runtimeSeconds:5700, videoId:"caB-B9ae1jQ", cleared:true }
 ].map(movie => ({ ...movie, posterUrl:"" }));
 
 // Add sponsor video IDs here. Blank IDs display synchronized station cards.
