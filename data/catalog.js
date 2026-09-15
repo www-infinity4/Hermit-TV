@@ -1,35 +1,37 @@
-// Unique seed bucket 1/8 for Hermit TV.
-// Control Phi's movie source farm expands this channel toward 96 distinct,
-// profile-matched full movies. The seed IDs are never shared with another
-// movie-channel seed catalog.
-(function(){
-  "use strict";
+// Playback policy: R-rated and age-restricted movie entries are excluded from this channel rotation.
+// Full-length movies currently offered free by established YouTube movie channels.
+// Recheck availability periodically because publishers can change or remove embeds.
+window.HERMIT_CATALOG = [
+  { id:"MOV-001", title:"The Phantom Planet", year:1961, collection:"Atomic Sci-Fi", runtimeSeconds:4920, videoId:"MqaN40sbap4", cleared:true },
+  { id:"MOV-002", title:"Things to Come", year:1936, collection:"Future Worlds", runtimeSeconds:5820, videoId:"22cOGjikPG8", cleared:true },
+  { id:"MOV-004", title:"The Amazing Transparent Man", year:1960, collection:"Strange Science", runtimeSeconds:4680, videoId:"OvJS9WFW7Uc", cleared:true },
+  { id:"MOV-005", title:"Attack from Space", year:1965, collection:"Space Adventure", runtimeSeconds:3000, videoId:"duc_edJQaxU", cleared:true },
+  { id:"MOV-006", title:"Phantom from Space", year:1953, collection:"Alien Signal", runtimeSeconds:4380, videoId:"SN8R3k73qj0", cleared:true },
+  { id:"MOV-007", title:"Missile to the Moon", year:1958, collection:"Moon Mission", runtimeSeconds:4680, videoId:"PkSlAmx_wnk", cleared:true },
+  { id:"MOV-008", title:"The Monster of Piedras Blancas", year:1959, collection:"Creature Feature", runtimeSeconds:4740, videoId:"SYKl4PtdPUA", cleared:true },
+  { id:"MOV-009", title:"The Santa Trap", year:2002, collection:"Family Night", runtimeSeconds:5280, videoId:"GJytAtSuEew", cleared:true },
+  { id:"MOV-010", title:"A Christmas Karen", year:2022, collection:"Comedy Night", runtimeSeconds:5940, videoId:"6nJ8n3MIiZY", cleared:true },
+  { id:"MOV-011", title:"A Room to Share", year:2024, collection:"Romantic Comedy", runtimeSeconds:5400, videoId:"8s7XqNWiTrw", cleared:true },
+  { id:"MOV-012", title:"Runs in the Family", year:2023, collection:"Adventure Comedy", runtimeSeconds:6300, videoId:"AuwUwN1JVec", cleared:true },
+  { id:"MOV-013", title:"Moving McAllister", year:2007, collection:"Road Comedy", runtimeSeconds:5340, videoId:"mVZOMXWsExs", cleared:true }
+].map(movie => ({ ...movie, posterUrl:"", networkChannel:"Hermit TV" }));
 
-  const rows = [
-    ["Jumbo", 4559, "LE8z71LEqbY", "Family Central"],
-    ["A Royal Christmas Ball", 5271, "ll7_eVUkzdQ", "Family Central"],
-    ["Dreambuilders", 4829, "sXuXuVoQrJ0", "Shout! Studios"],
-    ["Boonie Bears: The Big Shrink", 5390, "3opY2JZUR8E", "Family Central"],
-    ["Little Bite in the Big City", 4453, "8X9hkxYZcb4", "Family Central"],
-    ["Tiger", 5077, "gLgbxd2wCYY", "Family Central"],
-    ["Maya the Bee 3: The Golden Orb", 5297, "ZzVOrzxko6I", "Shout! Studios"],
-    ["Big Fish & Begonia", 6321, "PfdB7CBqLtA", "Shout! Studios"]
-  ];
+window.INFINITY_CHANNEL = {
+  id:"HERMIT-TV",
+  sourcePolicy:"Checked-in full-length catalog; no R-rated or age-restricted entries.",
+  schedulePolicy:"Keep the real catalog playing continuously; never replace it with an empty source-farm cache."
+};
 
-  window.HERMIT_CATALOG = rows.map(function(row,index){
-    return {
-      id:"HERMIT-TV-SEED-" + String(index+1).padStart(3,"0"),
-      title:row[0], year:null, collection:"Family Adventure Seed", runtimeSeconds:row[1],
-      videoId:row[2], source:row[3], networkChannel:"Hermit TV", contentClass:"Seed Feature",
-      rating:"Unrated", cleared:true, posterUrl:""
-    };
-  });
+window.HERMIT_COMMERCIALS = [
+  { id:"AD-001", title:"Hermit TV intermission", durationSeconds:60, videoId:"", cleared:true },
+  { id:"AD-002", title:"Tonight on Hermit TV", durationSeconds:60, videoId:"", cleared:true },
+  { id:"AD-003", title:"Now showing", durationSeconds:60, videoId:"", cleared:true }
+];
 
-  window.INFINITY_CHANNEL = {
-    id:"HERMIT-TV",
-    sourcePolicy:"Unique static seed bucket 1/8. Runtime catalog expansion comes from Hermit TV's own Control Phi source profile.",
-    schedulePolicy:"Seven-day no-repeat scheduler. Missing inventory stays empty until unique sources are harvested; it never wraps the seed list."
-  };
-
-  window.HERMIT_COMMERCIALS = [{id:"AD-001",title:"Hermit TV intermission",durationSeconds:60,videoId:"",cleared:true}];
+(function syncInfinityChannels(){
+  if (document.querySelector('script[data-infinity-channels]')) return;
+  const script = document.createElement('script');
+  script.src = 'https://www-infinity4.github.io/TNT/channels.js?v=20260915-live1';
+  script.dataset.infinityChannels = '1';
+  document.head.appendChild(script);
 })();
