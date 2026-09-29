@@ -127,13 +127,11 @@
     const key = "remote:" + p.catalogId + ":" + vid;
     els.stationCard.hidden = true;
     els.title.textContent = p.title;
+    document.body.style.setProperty("--program-art", `url("https://i.ytimg.com/vi/${vid}/maxresdefault.jpg")`);
     if (loadedKey !== key) {
       loadedKey = key;
       loadedMovieVideoId = vid;
       player.loadVideoById({videoId:vid,startSeconds:sec});
-    } else if (mode === "live" && player.getPlayerState() === YT.PlayerState.PLAYING) {
-      const drift = sec - player.getCurrentTime();
-      if (Math.abs(drift) > 3) player.seekTo(sec, true);
     }
     return true;
   }
@@ -170,8 +168,15 @@
     const liveState = engine.resolve(Date.now(), engine.createDaySchedule(Date.now(), catalog), commercials);
     els.clock.textContent = `${formatStationTime(Date.now())} local`;
     els.mode.textContent = mode === "live" ? (state.segment.kind === "commercial" ? "LIVE · COMMERCIAL BREAK" : "LIVE CHANNEL") : "TIME SHIFTED";
-    els.title.textContent = state.block.movie.title;
-    setProgramArt(state.block.movie);
+    // Cloudflare is authoritative while live. The local catalog is only a fallback.
+    const remoteProgram = mode === "live" && remoteNow && remoteNow.now;
+    els.title.textContent = remoteProgram ? remoteProgram.title : state.block.movie.title;
+    if (remoteProgram) {
+      const remoteVideoId = String((remoteProgram.source && remoteProgram.source.sourceId) || "");
+      if (remoteVideoId) document.body.style.setProperty("--program-art", `url("https://i.ytimg.com/vi/${remoteVideoId}/maxresdefault.jpg")`);
+    } else {
+      setProgramArt(state.block.movie);
+    }
     els.programTime.textContent = `${formatStationTime(state.block.startsAtMs)}–${formatStationTime(state.block.endsAtMs)}`;
     els.position.textContent = mode === "live" ? "Synced with every live viewer" : `${formatDuration(state.blockElapsed)} from start`;
     els.remaining.textContent = `${formatDuration(state.blockRemaining)} remaining in slot`;
